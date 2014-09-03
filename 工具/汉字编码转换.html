@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>汉字编码转换</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<link rel="stylesheet" type="text/css" href="../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>汉字编码转换</h3>
+		<div class="tarea">
+			<textarea placeholder="请输入内容" ng-model="source"></textarea>
+		</div>
+		<div class="btns3">
+			<button class="btn" ng-click="convert2xx()">转为：<em>&#xxxx</em></button>
+			<button class="btn" ng-click="convert2ux()">转为：<em>\uxxxx</em></button>
+			<button class="btn" ng-click="convert2WV()">转为：<em>::WV</em></button>
+		</div>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope){
+		
+		$scope.convert2xx = function() {
+			// 匹配出中文 然后将转义结果替换就好
+			$scope.result = $scope.source.replace(/[^\u0000-\u00FF]/g, function(m) {
+				return escape(m).replace(/(%u)(\w{4})/gi,"\&#x$2;");
+			});
+		};
+
+		$scope.convert2ux = function() {
+			// 匹配出中文 然后将转义结果替换就好
+			$scope.result = $scope.source.replace(/[^\u0000-\u00FF]/g, function(m) {
+				return escape(m).replace(/(%u)(\w{4})/gi,"\\u$2");
+			});
+		};
+
+		$scope.convert2WV = function() {
+			// 反转结果
+			// 针对两种情况 分别处理
+			$scope.result = $scope.source.replace(/(\\u)(\w{4})/gi, function(m) {
+				// %5Cu => \u => '\\u'
+				return String.fromCharCode(parseInt((escape(m).replace(/(%5Cu)(\w{4})/g, "$2")), 16));
+			}).replace(/(&#x)(\w{4});/gi, function(m) {
+				// %26%23x => &#x
+				// %3B => ;
+				return String.fromCharCode(parseInt((escape(m).replace(/(%26%23x)(\w{4})(%3B)/g, "$2")), 16));
+			});
+		};
+
+	}]);
+	</script>
+</body>
+</html>
