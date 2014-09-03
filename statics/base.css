@@ -45,7 +45,7 @@ a:hover {text-decoration:underline;}
 /*布局部分*/
 html {height:100%;overflow-y:scroll;overflow:-moz-scrollbars-vertical;}
 body {position:relative;min-height:100%;_height:100%;min-width:900px;background:#fff url("http://8.su.bdimg.com/skin/6.jpg?2") no-repeat center 0 fixed;-webkit-background-size:cover;-o-background-size:cover;background-size:cover;}
-.bdy {width:900px;margin:0 auto}
+.bdy {width:900px;margin:0 auto;overflow:hidden;}
 
 /*btn部分*/
 .btn {position:relative;display:inline-block;height:29px;line-height:29px;line-height:32px\9;padding:0 21px;font-size:12px;text-align:center;vertical-align:middle;white-space:nowrap;background:#25ab5e;color:#fff;cursor:pointer;border-radius:3px;text-shadow:0 1px 1px rgba(0,0,0,.15);-webkit-transition:background 0.2s;transition:background 0.2s}
