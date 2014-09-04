@@ -51,7 +51,7 @@ header h1 {color:#fff;font-size:3em;padding:.5em 0;}
 
 
 /*tab*/
-.tabset {margin:0 20px;}
+.tabset {padding:0 20px;}
 .tab-head {text-align:center;margin-bottom: -1px;}
 .tab-head li {display:inline-block;margin:0 5px;}
 .tab-head li a {display:block;padding:5px 20px;border-bottom:2px solid transparent;font-size:2em;}
@@ -153,6 +153,12 @@ form,
 }
 
 @media screen and (max-width: 640px) {
+	body {min-width:480px;}
+	.bdy {width:auto;}
+}
+
+@media screen and (max-width: 480px) {
 	body {min-width:320px;}
-	.bdy {width:300px;padding:0 10px;}
+	.bdy {width:auto;}
+	.tab-head li {width:40%;margin:0 5%;}
 }
