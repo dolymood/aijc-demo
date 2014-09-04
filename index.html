@@ -7,16 +7,54 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
 	<title>demo.aijc.net</title>
 	<link rel="stylesheet" type="text/css" href="./statics/base.css">
-	<style type="text/css">
-		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
-	</style>
 </head>
 <body>
+	<header><h1>页面导航</h1></header>
 	<div class="bdy">
-		<h3>页面列表：</h3>
-		<ul>
-			<li><a href="./%E5%B7%A5%E5%85%B7/%E6%B1%89%E5%AD%97%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2.html" class="fuc">汉字编码转换</a></li>
-		</ul>
+		<div class="tabset">
+			<ul class="tab-head">
+				<li><a href="#all">所有列表</a>
+				<li><a href="#js">js</a>
+				<li><a href="#css">css</a>
+				<li><a href="#tool">工具</a>
+			</ul>
+			<div class="tab-content fix">
+				<ul class="tab-pane" id="all">
+					<li><a href="./%E5%B7%A5%E5%85%B7/%E6%B1%89%E5%AD%97%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2.html" target="_blank" class="fuc">汉字编码转换</a>
+				</ul>
+				<ul class="tab-pane" id="js">
+					<li><a href="#js" class="fuc">暂无...</a>
+				</ul>
+				<ul class="tab-pane" id="css">
+					<li><a href="#css" class="fuc">暂无...</a>
+				</ul>
+				<ul class="tab-pane" id="tool">
+					<li><a href="./%E5%B7%A5%E5%85%B7/%E6%B1%89%E5%AD%97%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2.html" target="_blank" class="fuc">汉字编码转换</a>
+				</ul>
+			</div>
+		</div>
 	</div>
+	<script type="text/javascript">
+		var hash = pHash(location.hash);
+		location.hash = '';
+		var tabHeads = [].slice.apply(document.querySelectorAll('.tab-head a'));
+		window.addEventListener('hashchange', function() {
+			var nHash = pHash(location.hash);
+			tabHeads.forEach(function(tabHead) {
+				tabHead.parentElement.className = '';
+			});
+			var ae = document.querySelector('.tab-head a[href="#' + nHash + '"]');
+			if (ae) ae.parentElement.className = 'active';
+		});
+		if (!hash || hash === '#') {
+			hash = location.hash = 'all';
+		} else {
+			hash = location.hash = hash;
+		}
+
+		function pHash(hash) {
+			return hash.charAt(0) == '#' ? hash.substr(1) : hash
+		}
+	</script>
 </body>
 </html>
