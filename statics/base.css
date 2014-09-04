@@ -111,3 +111,14 @@ form,
 .frm {position:relative;zoom:1;margin:0 0 25px 0;padding-left:140px}
 .frm:before {content:'：'attr(csstxt);}
 .frm:before {direction:rtl;unicode-bidi:embed;white-space:nowrap;display:block;width:92px;margin:0 0 -30px -102px;padding:2px 0 5px;text-align:right;line-height:23px;color:#333}
+
+/*media*/
+@media screen and (max-width: 900px) {
+	body {min-width:640px;}
+	.bdy {width:640px;}
+}
+
+@media screen and (max-width: 640px) {
+	body {min-width:320px;}
+	.bdy {width:320px;}
+}
