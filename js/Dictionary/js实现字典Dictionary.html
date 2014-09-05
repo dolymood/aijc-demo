@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>js实现字典</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./Dictionary.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>js实现字典</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope){
+		
+		var dic = new Dictionary();
+
+		var firstEle = 'a first element';
+
+		var secondEle = 'c second element';
+
+		var threeEle = 'b three element';
+
+		var ret = [];
+
+		dic.add(firstEle, 1);
+		ret.push('增加项，键为："' + firstEle + '"，值为：' + 1);
+		dic.add(secondEle, 2);
+		ret.push('增加项，键为："' + secondEle + '"，值为：' + 2);
+		dic.add(threeEle, '3');
+		ret.push('增加项，键为："' + threeEle + '"，值为：3');
+
+		ret.push('此时字典长度：' + dic.count());
+		ret.push('此时所有项：\n' + dic.showAll().join('\n'));
+		ret.push('此时所有项（排序）：\n' + dic.showAll(true).join('\n'));
+		ret.push('此时查找键是"' + secondEle + '"的元素是：' + dic.find(secondEle));
+		ret.push('此时查找键是"其他不存在键"的元素是：' + dic.find('其他不存在键'));
+
+		ret.push('\n');
+
+		ret.push('移除键是"' + secondEle + '"的项：', dic.remove(secondEle));
+		ret.push('此时字典长度：' + dic.count());
+		ret.push('此时所有项：\n' + dic.showAll().join('\n'));
+		ret.push('此时查找键是"' + secondEle + '"的元素是：' + dic.find(secondEle));
+		ret.push('此时查找键是"' + threeEle + '"的元素是：' + dic.find(threeEle));
+
+		ret.push('\n');
+
+		dic.clear();
+		ret.push('清空字典');
+		ret.push('此时长度：' + dic.count());
+
+		updateRet();
+
+		function updateRet() {
+			$scope.result = ret.join('\n');
+		}
+
+	}]);
+	</script>
+</body>
+</html>
