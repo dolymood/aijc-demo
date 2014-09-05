@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>基数排序</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./Queue.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>基数排序</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope){
+		
+		var queues = [];
+
+		var ret = [];
+
+		for (var i = 0; i < 10; i++) {
+			queues.push(new Queue());
+		}
+
+		var nums = [], numLen = 15;
+
+		// 产生随机数
+		for (i = 0; i < numLen; i++) {
+			nums[i] = Math.floor(Math.random() * 100);
+		}
+
+		ret.push('随机的' + numLen + '个数：' + nums.join('|'));
+
+		ret.push('\n');
+
+		ret.push('执行算法，先算个位的');
+
+		distribute(nums, queues, numLen, 1);
+		collect(queues, nums);
+
+		ret.push('执行之后的结果：' + nums.join(' | '));
+
+		ret.push('\n');
+
+		ret.push('执行算法，算十位的');
+
+		distribute(nums, queues, numLen, 10);
+		collect(queues, nums);
+
+		ret.push('执行之后的结果：' + nums.join(' | '));
+
+		updateRet();
+
+		function updateRet() {
+			$scope.result = ret.join('\n');
+		}
+
+		/**
+		 * 根据相应位（个位或十位）上的数值，将数字分配到相应队列函数中
+		 * @param  {Array}  nums   数字组成数组
+		 * @param  {Array}  queues 队列组成数组
+		 * @param  {Number} n      长度
+		 * @param  {Number} digit  个位1或者十位10
+		 * @return {Undefined}      undefined
+		 */
+		function distribute(nums, queues, n, digit) {
+			for (var i = 0; i < n; i++) {
+				if (digit == 1) {
+					queues[nums[i] % 10].enqueue(nums[i]);
+				} else {
+					queues[Math.floor(nums[i] / 10)].enqueue(nums[i]);
+				}
+			}
+		}
+
+		/**
+		 * 从队列中收集数字
+		 * @param  {Array} queues 队列数组
+		 * @param  {Array} nums   数字数组
+		 * @return {Undefined}     undefined
+		 */
+		function collect(queues, nums) {
+			for (var i = 0, digit = 0; digit < 10; digit++) {
+				while (!queues[digit].empty()) {
+					nums[i++] = queues[digit].dequeue();
+				}
+			}
+		}
+
+	}]);
+	</script>
+</body>
+</html>
