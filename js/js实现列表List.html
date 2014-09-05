@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>js实现列表List</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./List.js"></script>
+	<link rel="stylesheet" type="text/css" href="../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>js实现列表List</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope){
+		
+		var list = new List();
+
+		var firstEle = 'first element';
+
+		var secondEle = 'second element';
+
+		var ret = [];
+
+		list.append(firstEle);
+		ret.push('插入第一个元素1：' + firstEle);
+		ret.push('现在的长度：' + list.length());
+		ret.push('现在的列表：' + list.toString());
+		ret.push('现在的元素：' + list.getElement());
+		ret.push('是否包含元素1：' + list.contains(firstEle));
+		ret.push('是否包含元素2：' + list.contains(secondEle));
+
+		ret.push('\n');
+
+		ret.push('在元素1后插入元素2：' + list.insert(secondEle, firstEle));
+
+		ret.push('现在的长度：' + list.length());
+		ret.push('现在的列表：' + list.toString());
+
+		ret.push('\n');
+
+		list.end()
+
+		ret.push('将列表的当前位置移动到最后一个位置');
+		ret.push('现在的位置：' + list.currPos());
+
+		ret.push('\n');
+
+		list.moveTo(0);
+		ret.push('移动到位置0');
+		ret.push('现在的位置：' + list.currPos());
+		ret.push('现在的元素：' + list.getElement());
+
+		ret.push('\n');
+
+		list.next();
+		ret.push('移动到下个位置');
+		ret.push('现在的位置：' + list.currPos());
+		ret.push('现在的元素：' + list.getElement());
+		
+		ret.push('\n');
+
+		ret.push('移除元素1：' + list.remove(firstEle));
+		ret.push('现在的长度：' + list.length());
+		ret.push('现在的列表：' + list.toString());
+		ret.push('现在的元素：' + list.getElement());
+		ret.push('现在的位置：' + list.currPos());
+
+		ret.push('\n');
+		
+		list.clear();
+		ret.push('清空列表');
+		ret.push('现在的长度：' + list.length());
+		ret.push('现在的位置：' + list.currPos());
+
+		updateRet();
+
+		function updateRet() {
+			$scope.result = ret.join('\n');
+		}
+
+	}]);
+	</script>
+</body>
+</html>
