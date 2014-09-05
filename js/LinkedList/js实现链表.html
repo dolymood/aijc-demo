@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>js实现链表LinkedList</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./LinkedList.js"></script>
+	<script type="text/javascript" src="./BidLinkedList.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>js实现链表LinkedList</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+		<h3>js实现双向链表BidLinkedList</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result1"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope){
+		
+		var linkedList = new LinkedList();
+
+		var firstEle = 'first element';
+
+		var secondEle = 'second element';
+
+		var threeEle = 'three element';
+
+		var ret = [];
+
+		linkedList.insert(firstEle, 'head');
+		ret.push('在头部后插入元素1：' + firstEle);
+
+		linkedList.insert(secondEle, firstEle);
+		ret.push('在元素1后插入元素2：' + secondEle);
+
+		linkedList.insert(threeEle, secondEle);
+		ret.push('在元素2后插入元素3：' + threeEle);
+
+		ret.push('此时结果：\n' + linkedList.display().join('\n'));
+
+		ret.push('\n');
+
+		linkedList.remove(secondEle);
+		ret.push('移除元素2');
+		ret.push('此时结果\n：' + linkedList.display().join('\n'));
+
+		$scope.result = ret.join('\n');
+
+		var bidLinkedList = new BidLinkedList();
+
+		ret = [];
+
+		bidLinkedList.insert(firstEle, 'head');
+		ret.push('在头部后插入元素1：' + firstEle);
+
+		bidLinkedList.insert(secondEle, firstEle);
+		ret.push('在元素1后插入元素2：' + secondEle);
+
+		bidLinkedList.insert(threeEle, secondEle);
+		ret.push('在元素2后插入元素3：' + threeEle);
+
+		ret.push('此时结果：\n' + bidLinkedList.display().join('\n'));
+		ret.push('此时反向结果：\n' + bidLinkedList.disReverse().join('\n'));
+
+		ret.push('\n');
+
+		bidLinkedList.remove(secondEle);
+		ret.push('移除元素2');
+		ret.push('此时结果：' + bidLinkedList.display().join('\n'));
+		ret.push('此时反向结果：\n' + bidLinkedList.disReverse().join('\n'));
+
+		$scope.result1 = ret.join('\n');
+
+	}]);
+	</script>
+</body>
+</html>

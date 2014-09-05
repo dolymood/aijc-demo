@@ -1,6 +1,6 @@
 /**
  * Class Queue
- * 栈 Queue
+ * 队列 Queue
  */
 
 function Queue() {
