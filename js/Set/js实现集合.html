@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>js实现集合</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./Set.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>js实现集合</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope) {
+
+		var set = new Set();
+		var set2 = new Set();
+
+		var firstEle = 'first element';
+
+		var secondEle = 'second element';
+
+		var threeEle = 'three element';
+
+		var fourEle = 'four element';
+
+		var fiveEle = 'five element';
+
+		var ret = [];
+
+		set.add(firstEle);
+		set.add(secondEle);
+		set.add(threeEle);
+		set.add(fourEle);
+
+		set2.add(secondEle);
+		set2.add(fourEle);
+		set2.add(fiveEle);
+
+		ret.push('初始化两个集合set和set2');
+
+		ret.push('现在set的集合中成员：' + set.show());
+		ret.push('现在set2的集合中成员：' + set2.show());
+
+		ret.push('\n');
+
+		ret.push('删除set集合中的成员"' + firstEle + '"：' + set.remove(firstEle));
+		ret.push('删除set2集合中的成员"不存在的"：' + set.remove('不存在的'));
+		ret.push('现在set的集合中成员：' + set.show());
+		ret.push('现在set2的集合中成员：' + set2.show());
+
+		ret.push('\n');
+
+		var set3 = set.union(set2);
+
+		ret.push('求得集合set和集合set2的并集set3');
+		ret.push('现在set3的集合中成员：' + set3.show());
+
+		ret.push('\n');
+
+		var set4 = set.intersect(set2);
+
+		ret.push('求得集合set和集合set2的交集set4');
+		ret.push('现在set4的集合中成员：' + set4.show());
+
+		ret.push('\n');
+
+		ret.push('集合set是否是集合set3的子集：' + set.subset(set3));
+		ret.push('集合set2是否是集合set4的子集：' + set2.subset(set4));
+
+		ret.push('\n');
+
+		var set5 = set.difference(set4);
+
+		ret.push('集合set和集合set4的补集set5');
+		ret.push('现在set5的集合中成员：' + set5.show());
+
+		updateRet();
+
+		function updateRet() {	
+			$scope.result = ret.join('\n');
+		}
+
+	}]);
+	</script>
+</body>
+</html>
