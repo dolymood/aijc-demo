@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>js实现散列</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./HashTable.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>js实现散列</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope){
+		
+		var hashTable = new HashTable();
+
+		var firstEle = 'first element';
+
+		var secondEle = 'second element';
+
+		var threeEle = 'three element';
+
+		var ret = [];
+
+		commonCreate(hashTable);
+
+		var nhashtable = new HashTable();
+
+		nhashtable.buildChains();
+		ret.push('构建链，避免碰撞（开链法）');
+
+		commonCreate(nhashtable);
+
+		var nhashtable2 = new HashTable();
+
+		nhashtable2.createValues();
+		ret.push('避免碰撞（线性探测法）');
+
+		commonCreate(nhashtable2);
+
+		updateRet();
+
+		function updateRet() {
+			$scope.result = ret.join('\n');
+		}
+
+		function commonCreate(ht) {
+			ht.put(firstEle, 1);
+			ret.push('put，键为："' + firstEle + '"，值为：' + 1);
+			ht.put(secondEle, 2);
+			ret.push('put，键为："' + secondEle + '"，值为：' + 2);
+			ht.put(threeEle, '3');
+			ret.push('put，键为："' + threeEle + '"，值为：3');
+
+			ret.push('此时散列表中数据：\n' + ht.showDistro().join('\n'));
+			ret.push('此时得到键是"' + secondEle + '"的值是：' + ht.get(secondEle));
+			ret.push('此时得到键是"其他不存在键"的值是：' + ht.get('其他不存在键'));
+
+			ret.push('\n');
+		}	
+
+	}]);
+	</script>
+</body>
+</html>
