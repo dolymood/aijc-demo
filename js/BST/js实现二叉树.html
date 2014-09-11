@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>js实现二叉树</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./BST.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>js实现二叉树</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', function($scope) {
+
+		var bst = new BST();
+
+		var firstEle = 5;
+
+		var secondEle = 2;
+
+		var threeEle = 30;
+
+		var fourEle = 90;
+
+		var fiveEle = 50;
+
+		var ret = [];
+
+		bst.insert(firstEle);
+		bst.insert(secondEle);
+		bst.insert(threeEle);
+		bst.insert(fourEle);
+		bst.insert(fiveEle);
+
+		ret.push('插入五个节点，他们的值依次是：' + firstEle + ' ' + secondEle + ' ' + threeEle + ' ' + fourEle + ' ' + fiveEle);
+
+		ret.push('\n');
+
+		ret.push('现在的BST（中序遍历）：' + bst.inOrder(bst.root));
+		ret.push('现在的BST（先序遍历）：' + bst.preOrder(bst.root));
+		ret.push('现在的BST（后序遍历）：' + bst.postOrder(bst.root));
+
+		ret.push('\n');
+
+		ret.push('现在的BST上最小值：' + bst.getMin());
+		ret.push('现在的BST上最大值：' + bst.getMax());
+
+		var f = bst.find(fiveEle);
+		ret.push('查找BST上指定值"' + fiveEle + '"：' + f + '---' + (f && f.show() || 'null'));
+
+		f = bst.find(2000);
+		ret.push('查找BST上指定值"' + 2000 + '"：' + f + '---' + (f && f.show() || 'null'));
+
+		ret.push('\n');
+
+		f = bst.remove(firstEle);
+		ret.push('移除BST上"' + firstEle + '"：' + f + '---' + (f && f.show() || 'null'));
+		ret.push('现在的BST（中序遍历）：' + bst.inOrder(bst.root));
+		
+		ret.push('\n');
+
+		bst.insert(60);
+		ret.push('插入节点：'+ 60);
+		ret.push('现在的BST（中序遍历）：' + bst.inOrder(bst.root));
+
+		f = bst.remove(fiveEle);
+		ret.push('移除BST上"' + fiveEle + '"：' + f + '---' + (f && f.show() || 'null'));
+		ret.push('现在的BST（中序遍历）：' + bst.inOrder(bst.root));
+
+		updateRet();
+
+		function updateRet() {	
+			$scope.result = ret.join('\n');
+		}
+
+	}]);
+	</script>
+</body>
+</html>
