@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>排序算法</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./Sort.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>排序算法</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', '$timeout', function($scope, $timeout) {
+
+		var ret = [], ary;
+
+		ret.push('-----------基本排序------------');
+		ary = cData(10);
+		ret.push('创建10个随机数：' + ary);
+		bubbleSort(ary);
+		ret.push('进行冒泡排序后：' + ary);
+		ret.push('\n');
+
+		ary = cData(10);
+		ret.push('创建10个随机数：' + ary);
+		selectionSort(ary);
+		ret.push('进行选择排序后：' + ary);
+		ret.push('\n');
+
+		ary = cData(10);
+		ret.push('创建10个随机数：' + ary);
+		insertionSort(ary);
+		ret.push('进行插入排序后：' + ary);
+		ret.push('\n');
+
+		ret.push('-----------高级排序------------');
+
+		ary = cData(20);
+		ret.push('创建20个随机数：' + ary);
+		shellSort(ary);
+		ret.push('进行希尔排序后：' + ary);
+		ret.push('\n');
+
+		ary = cData(20);
+		ret.push('创建20个随机数：' + ary);
+		mergeSort(ary);
+		ret.push('进行归并排序后：' + ary);
+		ret.push('\n');
+
+		ary = cData(20);
+		ret.push('创建20个随机数：' + ary);
+		ary = quickSort(ary, 0 , ary.length - 1);
+		ret.push('进行快速排序（方法一）后：' + ary);
+		ret.push('\n');
+
+		ary = cData(20);
+		ret.push('创建20个随机数：' + ary);
+		quickSort2(ary, 0 , ary.length - 1);
+		ret.push('进行快速排序（方法二）后：' + ary);
+		ret.push('\n');
+
+		$timeout(function() {
+			ret.push('-----------排序比较------------');
+
+			ret.push('对10000个数字进行冒泡、选择、插入、希尔、归并以及快速几种排序花费时间比较');
+			ary = cData(10000);
+			var t = new Date();
+			bubbleSort(ary);
+			ret.push('bubbleSort：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
+			selectionSort(ary);
+			ret.push('selectionSort：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
+			insertionSort(ary);
+			ret.push('insertionSort：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
+			shellSort(ary);
+			ret.push('shellSortSort：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
+			mergeSort(ary);
+			ret.push('mergeSort：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
+			quickSort(ary);
+			ret.push('quickSort：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
+			quickSort2(ary, 0, ary.length - 1);
+			ret.push('quickSort2：' + (new Date() - t));
+
+			updateRet();
+		}, 1000);
+		
+		updateRet();
+		function updateRet() {	
+			$scope.result = ret.join('\n');
+		}
+
+		function cData(len) {
+			var ret = [];
+			for (var i = 0; i < len; i++) {
+				ret[i] = Math.floor(Math.random() * (len + 1));
+			}
+			return ret;
+		}
+
+	}]);
+	</script>
+</body>
+</html>
