@@ -45,8 +45,8 @@ a:hover {text-decoration:underline;}
 /*布局部分*/
 html {height:100%;overflow-y:scroll;overflow:-moz-scrollbars-vertical;}
 body {position:relative;min-height:100%;_height:100%;min-width:900px;background:#e5e5e5 url("http://8.su.bdimg.com/skin/6.jpg?2") no-repeat center 0 fixed;-webkit-background-size:cover;-o-background-size:cover;background-size:cover;}
-header {padding:0 2em;background:rgba(0, 0, 0, .4);}
-header h1 {color:#fff;font-size:3em;padding:.5em 0;}
+header {background:rgba(0, 0, 0, .4);}
+header h1 {margin-left:auto;margin-right:auto;width:900px;padding:.5em 0;text-indent:20px;color:#fff;font-size:3em;}
 .bdy {width:900px;margin:0 auto;overflow:hidden;}
 
 
@@ -149,16 +149,16 @@ form,
 /*media*/
 @media screen and (max-width: 900px) {
 	body {min-width:640px;}
-	.bdy {width:640px;}
+	.bdy, header h1 {width:640px;}
 }
 
 @media screen and (max-width: 640px) {
 	body {min-width:480px;}
-	.bdy {width:auto;}
+	.bdy, header h1 {width:auto;}
 }
 
 @media screen and (max-width: 480px) {
 	body {min-width:320px;}
-	.bdy {width:auto;}
+	.bdy, header h1 {width:auto;}
 	.tab-head li {width:40%;margin:0 5%;}
 }
