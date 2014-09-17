@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>检索查找</title>
+	<script type="text/javascript" src="http://s1.kuaipan.cn/j/pub/angular/1.2.16.js"></script>
+	<script type="text/javascript" src="./Search.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<style type="text/css">
+		h3 {font-size:1.3em;font-weight:bold;margin:.5em 0;}
+		textarea {height:300px;}
+		.btns3 {margin-top:10px;margin-bottom:10px;}
+	</style>
+</head>
+<body ng-controller="index">
+	<div class="bdy">
+		<h3>检索查找</h3>
+		<div class="tarea">
+			<textarea placeholder="结果" ng-model="result"></textarea>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('index', ['$scope', '$timeout', function($scope, $timeout) {
+
+		var ret = [], ary;
+
+		ary = cData(10);
+		ret.push('创建10个随机数：' + ary);
+		ret.push('顺序查找5在其中位置：' + seqSearch(ary, 5));
+		ret.push('\n');
+
+		ary = cData(10);
+		ary.sort(function(i, j) {
+			return i > j;
+		});
+		ret.push('创建10个随机数，并排序：' + ary);
+		ret.push('二分查找5在其中位置：' + binSearch(ary, 5));
+	
+		
+		updateRet();
+
+		function updateRet() {	
+			$scope.result = ret.join('\n');
+		}
+
+		function cData(len) {
+			var ret = [];
+			for (var i = 0; i < len; i++) {
+				ret[i] = Math.floor(Math.random() * (len + 1));
+			}
+			return ret;
+		}
+
+	}]);
+	</script>
+</body>
+</html>
