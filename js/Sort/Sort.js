@@ -192,7 +192,7 @@ function quickSort(ary) {
 		}
 	}
 
-	return quickSort(left).concat(quickSort(right));
+	return quickSort(left).concat(base, quickSort(right));
 }
 
 /**
