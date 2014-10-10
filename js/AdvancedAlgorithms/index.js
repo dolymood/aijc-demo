@@ -108,3 +108,73 @@ function lcs(word1, word2) {
 	}
 	return ret;
 }
+
+/**
+ * 背包问题（递归）
+ * @param  {Number} capacity 体积
+ * @param  {Array}  size     尺寸组成数组
+ * @param  {Array}  value    价值组成的数组
+ * @param  {Number} n        当前用于计算长度
+ * @return {Number}          最大价值
+ */
+function knapsack(capacity, size, value, n) {
+	if (n === 0 || capacity === 0) return 0;
+
+	if (size[n - 1] > capacity) {
+		return knapsack(capacity, size, value, n - 1);
+	} else {
+		return Math.max(
+			value[n - 1] + knapsack(capacity - size[n - 1], size, value, n - 1), knapsack(capacity, size, value, n - 1));
+	}
+}
+
+/**
+ * 背包问题（动态规划）
+ * @param  {Number} capacity 体积
+ * @param  {Array}  size     尺寸组成数组
+ * @param  {Array}  value    价值组成的数组
+ * @param  {Number} n        当前用于计算长度
+ * @return {Number}          最大价值
+ */
+function dKnapsack(capacity, size, value, n) {
+	var K = [], i = 0, w = 0;
+	for ( ; i <= capacity + 1; i++) {
+		K[i] = [];
+	}
+	for (i = 0; i <= n; i++) {
+		for (w = 0; w <= capacity; w++) {
+			if (i === 0 || w === 0) {
+				K[i][w] = 0;
+			} else if (size[i - 1] <= w) {
+				K[i][w] = Math.max(value[i - 1] + K[i - 1][w - size[i - 1]], K[i - 1][w]);
+			} else {
+				K[i][w] = K[i - 1][w];
+			}
+		}
+	}
+	return K[n][capacity];
+}
+
+/**
+ * 找零
+ * @param  {Number} origAmt 总钱数
+ * @return {Array}          需要找的不同面额钱个（张）数
+ */
+function makeChange(origAmt) {
+	var remainAmt = 0;
+	// 不同面额钱 25美分 10美分 5美分 1美分
+	var money = [.25, .1, .05, .01];
+	var i = 0, len = money.length;
+	var ret = [], tmp;
+
+	for ( ; i < len; i++) {
+		if (origAmt === 0) break;
+		tmp = money[i];
+		// 按顺序 由小到大
+		if (origAmt % tmp < origAmt) {
+			ret[i] = parseInt(origAmt / tmp);
+			origAmt = remainAmt = origAmt % tmp;
+		}
+	}
+	return ret;
+}
