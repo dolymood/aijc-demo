@@ -45,6 +45,7 @@ a:hover {text-decoration:underline;}
 /*布局部分*/
 html {height:100%;overflow-y:scroll;overflow:-moz-scrollbars-vertical;}
 body {position:relative;min-height:100%;_height:100%;min-width:900px;background:#e5e5e5 url("http://8.su.bdimg.com/skin/6.jpg?2") no-repeat center 0 fixed;-webkit-background-size:cover;-o-background-size:cover;background-size:cover;}
+body > a[href^="http://tongji.baidu.com"] {z-index:-10;top:0;left:-1000px;position:absolute;}
 header {background:rgba(0, 0, 0, .4);}
 header h1 {margin-left:auto;margin-right:auto;width:900px;padding:.5em 0;text-indent:20px;color:#fff;font-size:3em;}
 .bdy {width:900px;margin:0 auto;overflow:hidden;}
