@@ -61,6 +61,7 @@ header h1 {margin-left:auto;margin-right:auto;width:900px;padding:.5em 0;text-in
 .tab-content {overflow:hidden;border-top:1px solid rgba(255, 255, 255, .8);}
 .tab-content:after {content:"";display:block;clear:both;}
 .tab-content li {color:#f3f3f3;padding:10px 5px;border-bottom:1px solid rgba(255,255,255, .4);}
+.tab-content li:last-child {border-bottom:0;}
 .tab-content li a {font-size:1.5em;}
 .tab-pane {float:left;margin-left:-100%;width:100%;visibility:hidden;opacity:0;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;}
 .tab-pane:first-child {margin-left:0}
