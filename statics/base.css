@@ -161,6 +161,5 @@ form,
 
 @media screen and (max-width: 480px) {
 	body {min-width:320px;}
-	.bdy, header h1 {width:auto;}
 	.tab-head li {width:40%;margin:0 5%;}
 }
