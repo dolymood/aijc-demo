@@ -1,5 +1,5 @@
 /**
- * Timeline 0.0.1
+ * Timeline
  * https://github.com/dolymood/Timeline
  * MIT licensed
  *
@@ -59,7 +59,10 @@
 		mouseZoom: true,
 
 		// 检测resize
-		checkResize: false
+		checkResize: false,
+
+		// 即使超出了也显示当前级别的所有日期 
+		showAllLevelDate: false
 
 	};
 
@@ -256,6 +259,25 @@
 		},
 
 		/**
+		 * 日期是否是有效日期
+		 * @param  {Date|String} date 日期
+		 * @return {Boolean}      		是否有效
+		 */
+		isValidDate: function(date) {
+			if (!date) return false;
+			if (typeof date == 'string') {
+				date = parse2Date(date);
+			}
+			var range = this.getRange();
+			var start = range.start;
+			var end = range.end;
+			if (start - date > 0 || end - date < 0) {
+				return false;
+			}
+			return true;
+		},
+
+		/**
 		 * 刷新
 		 */
 		refresh: function() {
@@ -379,6 +401,14 @@
 		},
 
 		/**
+		 * 得到缩放等级zoomLevel
+		 * @return {Number} 处在的等级
+		 */
+		getZoomLevel: function() {
+			return this.zoomLevel;
+		},
+
+		/**
 		 * 得到日期level
 		 * @return {String} 日期level
 		 */
@@ -441,7 +471,7 @@
 			var method = SHOWLEVELS[level - 1];
 			var v = date[method]();
 			if (!this.focusEle || this.focusEle.attr('data-id') != v) {
-				this.focusEle = $('#' + id).find('.tl-subitem-label[data-id="' + v + '"]');
+				this._setFocusEle($('#' + id).find('.tl-subitem-label[data-id="' + v + '"]'));
 			}
 			
 			this.updatePos();
@@ -457,21 +487,63 @@
 			if (this.inited && this.focusDate && equalDate(this.focusDate, date)) {
 				return;
 			}
+			var trigger = true;
+			var focusDate = this.focusDate;
+			var triggerDate;
 			if (noref) {
-				this.focusDate = this.getValidDate(date);
+				date = this.getValidDate(date);
+				triggerDate = date;
+				checkDoTrigger(date);
+				this.focusDate = date;
 			} else {
+				triggerDate = date;
+				checkDoTrigger(date);
 				this.focusDate = date;
 				this._refresh();
 			}
-			if (!this.options.alwaysTrigger && !this.checkDateOK(parseDateByLevel(this.focusDate, this.getDateLevel()))) {
-				return;
-			}
+
+			if (!trigger) return;
 			if (this.inited) {
-				this.EVENT.trigger('dateChange', [this.focusDate, noref]);
+				this.EVENT.trigger('dateChange', [triggerDate, noref]);
 			} else {
 				setTimeout(function() {
-					that.EVENT.trigger('dateChange', [that.focusDate, noref]);
+					that.EVENT.trigger('dateChange', [triggerDate, noref]);
 				});
+			}
+			function checkDoTrigger(_date) {
+				if (!that.options.alwaysTrigger && that.inited) {
+					var level = that.getDateLevel();
+					var finded = false;
+					var range = that.getRange();
+					// 是否是往小日期方向去的
+					var toSmaller = _date - focusDate < 0;
+					// 是否应该比较下一个日期
+					var shouldCheckNext = toSmaller ^ that.options.reverseDate;
+					var cDate = range[toSmaller ? 'end' : 'start'];
+					var tmp = _date;
+					do {
+						if (tmp === _date) tmp = parseDateByLevel(_date, level);
+						_date = tmp;
+						if (that.checkDateOK(_date)) {
+							finded = true;
+						}
+					} while (!finded && checkOK())
+
+					if (finded && !equalDate(_date, focusDate)) {
+						triggerDate = _date;
+						trigger = true;
+					} else {
+						trigger = false;
+					}
+				}
+				function checkOK() {
+					if (shouldCheckNext) {
+						tmp = that.getNextDate(_date);
+					} else {
+						tmp = that.getPrevDate(_date);
+					}
+					return toSmaller ? (tmp - cDate <= 0) : (tmp - cDate >= 0);
+				}
 			}
 		},
 
@@ -533,7 +605,7 @@
 						var ele = $(this);
 						if (checkIn(ele)) {
 							// 得到了
-							that.focusEle = ele;
+							that._setFocusEle(ele);
 							var date = that._getDateByEle(ele);
 							that._setFocusDate(date, true);
 							return false;
@@ -556,6 +628,18 @@
 					return false;
 				}
 			}
+		},
+
+		/**
+		 * 设置focusEle
+		 * @param {Object} ele 设置jquery封装元素
+		 */
+		_setFocusEle: function(ele) {
+			this.focusEle && this.focusEle.removeClass('tl-focus-ele');
+			this.focusEle = ele;
+			this.focusEle.addClass('tl-focus-ele');
+			var w = ele.outerWidth();
+			this._cursor.width(w).css('margin-left', -w / 2);
 		},
 
 		/**
@@ -639,7 +723,7 @@
 		 * 创建timeline的cursor
 		 */
 		_buildCursor: function() {
-			this._cursor = $('<div class="tl-cursor"></div>');
+			this._cursor = $('<div class="tl-cursor"><i></i></div>');
 		},
 
 		/**
@@ -677,6 +761,14 @@
 			this.hZoomUnit = (ret.DAY - ret.HOUR) / 4;
 
 			return ret;
+		},
+
+		/**
+		 * 得到zoomTree
+		 * @return {Object} 不同等级的zoomTree
+		 */
+		getZoomTree: function() {
+			return this._initZoomTree();
 		},
 
 		/**
@@ -744,9 +836,12 @@
 
 			var ret = buildDE() + this._buildSubItemBody(lastDE + 's') +
 								subitemLabels;
-			tmp = newDate(tmp.getFullYear());
+			
 			if (reverseDate) {
-				var start = newDate(range.start.getFullYear());
+				var start = this.options.showAllLevelDate ?
+											newDate(range.start.getDE()) :
+											newDate(range.start.getFullYear());
+				tmp = newDate(this.options.showAllLevelDate ? tmp.getDE() + 9 : tmp.getFullYear());
 				while (tmp - start >= 0) {
 					if (tmp.getDE() < lastDE) {
 						lastDE = tmp.getDE();
@@ -757,7 +852,12 @@
 					tmp.setFullYear(tmp.getFullYear() - 1);
 				}
 			} else {
-				while (tmp - range.end <= 0) {
+				var end = this.options.showAllLevelDate ?
+										// 取得最后一年的12月31号最后
+										newDate(range.end.getDE() + 9, 11, 31, 23, 59, 59, 999) :
+										range.end;
+				tmp = newDate(this.options.showAllLevelDate ? tmp.getDE() : tmp.getFullYear());
+				while (tmp - end <= 0) {
 					if (tmp.getDE() > lastDE) {
 						lastDE = tmp.getDE();
 						ret += endDiv + endDiv + buildDE();
@@ -805,9 +905,12 @@
 
 			var ret = buildY() + this._buildSubItemBody(lastYear) +
 								subitemLabels;
-			tmp = newDate(tmp.getFullYear(), tmp.getMonth());
+			
 			if (reverseDate) {
-				var start = newDate(range.start.getFullYear(), range.start.getMonth());
+				var start = this.options.showAllLevelDate ?
+											newDate(range.start.getFullYear()) :
+											newDate(range.start.getFullYear(), range.start.getMonth());
+				tmp = newDate(tmp.getFullYear(), this.options.showAllLevelDate ? 11 : tmp.getMonth());
 				while (tmp - start >= 0) {
 					if (tmp.getFullYear() < lastYear) {
 						lastYear = tmp.getFullYear();
@@ -818,7 +921,11 @@
 					tmp.setMonth(tmp.getMonth() - 1);
 				}
 			} else {
-				while (tmp - range.end <= 0) {
+				var end = this.options.showAllLevelDate ?
+										newDate(range.end.getFullYear(), 11, 31, 23, 59, 59, 999) :
+										range.end;
+				tmp = newDate(tmp.getFullYear(), this.options.showAllLevelDate ? 0 : tmp.getMonth());
+				while (tmp - end <= 0) {
 					if (tmp.getFullYear() > lastYear) {
 						lastYear = tmp.getFullYear();
 						ret += endDiv + endDiv + buildY();
@@ -874,9 +981,13 @@
 								this._buildSubItemBody(getIn()) +
 								subitemLabels;
 			var tmpt;
-			tmp = newDate(tmp.getFullYear(), tmp.getMonth(), tmp.getDate());
+			
 			if (reverseDate) {
-				var start = newDate(range.start.getFullYear(), range.start.getMonth(), range.start.getDate());
+				var start = newDate(range.start.getFullYear(), range.start.getMonth(), this.options.showAllLevelDate ? 1 : range.start.getDate());
+				var t = parse2Date(newDate(tmp.getFullYear(), tmp.getMonth() + 1) - 1);
+				tmp = this.options.showAllLevelDate ?
+								newDate(t.getFullYear(), t.getMonth(), t.getDate()) :
+								newDate(tmp.getFullYear(), tmp.getMonth(), tmp.getDate());
 				while (tmp - start >= 0) {
 					tmpt = tmp.getFullYear();
 					if (tmpt < lastYear) {
@@ -896,7 +1007,11 @@
 					tmp.setDate(tmp.getDate() - 1);
 				}
 			} else {
-				while (tmp - range.end <= 0) {
+				var end = this.options.showAllLevelDate ?
+										parse2Date(newDate(range.end.getFullYear(), range.end.getMonth() + 1) - 1) :
+										range.end;
+				tmp = newDate(tmp.getFullYear(), tmp.getMonth(), this.options.showAllLevelDate ? 1 : tmp.getDate());
+				while (tmp - end <= 0) {
 					tmpt = tmp.getFullYear();
 					if (tmpt > lastYear) {
 						lastYear = tmpt;
@@ -961,9 +1076,10 @@
 								this._buildSubItemBody(getIn()) +
 								subitemLabels;
 			var tmpt;
-			tmp = newDate(tmp.getFullYear(), tmp.getMonth(), tmp.getDate(), tmp.getHours());
+			
 			if (reverseDate) {
-				var start = newDate(range.start.getFullYear(), range.start.getMonth(), range.start.getDate(), range.start.getHours());
+				var start = newDate(range.start.getFullYear(), range.start.getMonth(), range.start.getDate(), this.options.showAllLevelDate ? 0 : range.start.getHours());
+				tmp = newDate(tmp.getFullYear(), tmp.getMonth(), tmp.getDate(), this.options.showAllLevelDate ? 23 : tmp.getHours());
 				while (tmp - start >= 0) {
 					tmpt = tmp.getFullYear();
 					if (tmpt < lastYear) {
@@ -992,7 +1108,11 @@
 					tmp.setHours(tmp.getHours() - 1);
 				}
 			} else {
-				while (tmp - range.end <= 0) {
+				var end = this.options.showAllLevelDate ?
+										newDate(range.end.getFullYear(), range.end.getMonth(), range.end.getDate(), 23, 59, 59, 999) :
+										range.end;
+				tmp = newDate(tmp.getFullYear(), tmp.getMonth(), tmp.getDate(), this.options.showAllLevelDate ? 0 : tmp.getHours());
+				while (tmp - end <= 0) {
 					tmpt = tmp.getFullYear();
 					if (tmpt > lastYear) {
 						lastYear = tmpt;
@@ -1280,14 +1400,15 @@
 
 	});
 	
-	// 得到focusDate上个level日期 下个level日期
+	// 得到focusDate或者指定日期
+	// 上个level日期 下个level日期
 	// 注意可能会是超出时间轴的最小 最大日期的
 	// 例如：当前focusDate是2014-11-1，
 	// 最大日期是2014-11-3，且当前level是月，
 	// 那么得到的naxtDate就是 2014-12-1
 	$.each(['getPrevDate', 'getNextDate'], function(_, name) {
-		Timeline.prototype[name] = function() {
-			var date = this.focusDate;
+		Timeline.prototype[name] = function(date) {
+			if (!date) date = this.focusDate;
 			var reverseDate = this.options.reverseDate;
 			var k = this.options.reverseDate ? 1 : -1;
 			var d;
@@ -1440,4 +1561,4 @@
 		}
 	}
 
-}(window, $));
+}(window, jQuery));
