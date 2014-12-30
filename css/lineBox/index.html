@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+	<title>CSS自适应高度</title>
+	<link rel="stylesheet" type="text/css" href="../../statics/base.css">
+	<link rel="stylesheet" type="text/css" href="g.css">
+</head>
+<body>
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vd">vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vm">inline vertical-align:middle</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vt">inline vertical-align:top</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vb">inline vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vt">inline vertical-align:top</span>
+		<span class="vb">inline vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vt">vertical-align:top</span>
+		<span class="vm">vertical-align:middle</span>
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vb">vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="inb">inline-block</span>
+		<span class="inb">inline-block</span>
+		<span class="inb">inline-block</span>
+		<span class="inb">inline-block</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="inb vm">inline-block vertical-align:middle</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="inb vt">inline-block vertical-align:top</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+		<span class="inb vb">inline-block vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="inb vt">inline-block vertical-align:top</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+		<span class="inb vb">inline-block vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="inb vt">inline-block vertical-align:top</span>
+		<span class="inb vm">inline-block vertical-align:middle</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+		<span class="inb vb">inline-block vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="inb vt">inline-block vertical-align:top</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="inb vm">inline-block vertical-align:middle</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vd">vertical-align:baseline</span>
+		<span class="inb vb">inline-block vertical-align:bottom</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vm">inline vertical-align:middle</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vt">inline vertical-align:top</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vb">inline vertical-align:bottom</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+	</div>
+
+	<div class="Bdy">
+		<span class="vt">vertical-align:top</span>
+		<span class="vm">vertical-align:middle</span>
+		<span class="vd">vertical-align:baseline</span>
+		<span class="vb">vertical-align:bottom</span>
+		<span class="inb vt">inline-block vertical-align:top</span>
+		<span class="inb vm">inline-block vertical-align:middle</span>
+		<span class="inb vd">inline-block vertical-align:baseline</span>
+		<span class="inb vb">inline-block vertical-align:bottom</span>
+	</div>
+
+	<script type="text/javascript">
+		var Bdys = document.getElementsByClassName('Bdy');
+		var fHeight = Bdys[0].offsetHeight;
+
+		for (var i = 1, len = Bdys.length; i < len; i++) {
+			if (Bdys[i].offsetHeight > fHeight) {
+				Bdys[i].className += ' Bdy2';
+				Bdys[i].title = '我比较高 ' + Bdys[i].offsetHeight;
+			}
+		}
+	</script>
+</body>
+</html>
