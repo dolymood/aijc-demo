@@ -26,7 +26,21 @@
 		defBase = '/';
 	}
 
+	var locationOrigin = M.parseLocation().origin;
+
+	var history = win.history;
+	var agent = (win.navigator || {}).userAgent;
+	if (!agent) agent = '';
+	var android = parseInt((/android (\d+)/.exec(agent.toLowerCase()) || [])[1], 10);
+	if (isNaN(android)) android = undefined;
+	var boxee = /Boxee/i.test(agent);
+
+	var support = !!(history && history.pushState && history.replaceState && !(android < 4) && !boxee);
+
 	var History = {
+
+		/*是否支持*/
+		support: support,
 
 		/*是否已启动*/
 		_startd: false,
@@ -48,11 +62,13 @@
 			}
 			this._startd = true;
 
-			// 监听改变
-			win.addEventListener('popstate', this.onChange);
+			if (support) {
+				// 监听改变
+				win.addEventListener('popstate', this.onChange);
 
-			// 阻止 a
-			M.document.addEventListener('click', this.onDocClick);
+				// 阻止 a
+				M.document.addEventListener('click', this.onDocClick);
+			}
 
 			// 需要初始化一次当前的state
 			this.onChange();
@@ -95,32 +111,35 @@
 			if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
 				return true;
 			}
-			var rjavascript = /^javascript:/;
+			
 			var targetEle = e.target;
 			var hrefTarget = M.getHrefAndTarget(targetEle);
 			targetEle = hrefTarget.target;
 			var href = hrefTarget.href;
 			var parsedUrl = M.parseUrl(href);
-			var parsedLocation = M.parseLocation();
 			// 存在 href 且和当前是同源
 			// 且不带 target 且不是以 javascript: 开头
-			if (href &&
-					parsedLocation.origin === parsedUrl.origin &&
-					!targetEle.target && !href.match(rjavascript)) {
+			if (History.checkUrl(href) && !targetEle.target) {
 				var datasetObj =  M.getDatesetObj(targetEle);
 				var state = History.createStateObject(href, datasetObj);
-				if (state.rurl === parsedLocation.rurl) {
-					// 如果有hash 直接走浏览器默认行为
-					if (state.hash || state.hash !== parsedLocation.hash) {
-						return true;
-					}
-					e.preventDefault();
-					return false;
-				}
 				e.preventDefault();
 				History.pushState(state, true);
 				return false;
 			}
+		},
+
+		/**
+		 * 检测url是否可以走自定义pushState
+		 * @param  {String}  url       url
+		 * @param  {String}  urlOrigin 检测url的origin
+		 * @return {Boolean}           检测结果
+		 */
+		checkUrl: function(url, urlOrigin) {
+			if (!urlOrigin) {
+				urlOrigin = M.parseUrl(url).origin;
+			}
+			var rjavascript = /^javascript:/;
+			return url && locationOrigin === urlOrigin && !rjavascript.test(url);
 		},
 
 		/**
@@ -140,9 +159,7 @@
 		 */
 		pushState: function(state, checked) {
 			if (!checked) {
-				var parsedUrl = M.parseUrl(state.rurl);
-				var parsedLocation = M.parseLocation();
-				if (parsedLocation.origin !== parsedUrl.origin || state.rurl === parsedLocation.rurl) {
+				if (!this.checkUrl(state.url, state.origin) || state.url === M.location.href) {
 					return;
 				}
 			}
@@ -159,6 +176,17 @@
 		onChange: function(e) {
 			var state = e && e.state || History.getUrlState(location.href);
 			var oldState = History.getCurrentState();
+
+			// 如果新的url和旧的url只是hash不同，那么应该走scrollIntoView
+			var scrollToEle;
+			if (oldState && state.rurl === oldState.rurl) {
+				if (state.hash) {
+					scrollToEle = M.document.getElementById(state.hash);
+					scrollToEle && scrollToEle.scrollIntoView();
+				}
+				return;
+			}
+
 			var newIndex = History.storeState(state);
 			var type = '';
 			if (newIndex > History.index) {
@@ -227,6 +255,7 @@
 				title: title || data.title || document.title,
 				rurl: parsedUrl.rurl,
 				url: parsedUrl.url,
+				origin: parsedUrl.origin,
 				hash: parsedUrl.hash
 			};
 		},

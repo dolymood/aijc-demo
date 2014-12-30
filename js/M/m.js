@@ -24,7 +24,6 @@
 		return url.replace(/#.*/, '');
 	};
 
-	var history = win.history;
 	var location = win.location;
 	var document = win.document;
 	var body = document.body;
@@ -40,6 +39,10 @@
 		a.href = href;
 		return trimUrl(a.href);
 	};
+	var getHash = function(loc) {
+		if (!loc) loc = location;
+		return loc.hash.substr(1);
+	};
 	// 解析location或者a信息
 	var parseLocation = function(loc) {
 		if (!loc) loc = location;
@@ -47,7 +50,7 @@
 			url: loc.href, // 完整 href
 			rurl: trimUrl(loc.href), // 去除hash的 href
 			host: loc.host, // host
-			hash: loc.hash.substr(1), // hash 不带#
+			hash: getHash(loc), // hash 不带#
 			protocol: loc.protocol, // 协议
 			origin: loc.origin || (loc.protocol + '//' + loc.host), // origin
 			pathname: loc.pathname, // path
@@ -290,6 +293,7 @@
 		each: each,
 		trimUrl: trimUrl,
 		parseUrl: parseUrl,
+		getHash: getHash,
 		getFullUrl: getFullUrl,
 		getHrefAndTarget: getHrefAndTarget,
 		camelize: camelize,
@@ -314,7 +318,6 @@
       return el.nodeType === 1 && ClassList(el).contains(cls);
 		},
 
-		history: history,
 		location: location,
 		document: document,
 		body: body,
