@@ -79,13 +79,24 @@
 
 	};
 
-	// 是否是webkit
-	var isWebkit = 'WebkitAppearance' in document.documentElement.style || typeof document.webkitHidden != 'undefined';
-	// 动画结束事件名
-	var aniEndName = isWebkit ? 'webkitAnimationEnd' : 'animationend';
-
 	// 蒙层元素
-	var maskEle = document.createElement('div');
+	var maskEle = M.document.createElement('div');
+
+	// 动画结束事件名
+	var aniEndName = (function() {
+		var eleStyle = maskEle.style;
+		var verdors = ['a', 'webkitA', 'MozA', 'OA', 'msA'];
+		var endEvents = ['animationend', 'webkitAnimationEnd', 'animationend', 'oAnimationEnd', 'MSAnimationEnd'];
+		var animation;
+		for (var i = 0, len = verdors.length; i < len; i++) {
+			animation = verdors[i] + 'nimation';
+			if (animation in eleStyle) {
+				return endEvents[i];
+			}
+		}
+		return 'animationend';
+	}());
+	
 
 	var Router = {
 
@@ -433,6 +444,16 @@
 			M.removeClass(_pageViewEle, initPosClass);
 			M.addClass(_pageViewEle, enterClass);
 			
+			if (!state.cached) {
+				// 增加对hash处理 有时候浏览器不能滚动到响应的
+				// 带有hash id 的元素位置
+				var hash = options.state.hash;
+				var scrollToEle;
+				if (hash) {
+					scrollToEle = M.document.getElementById(hash);
+					scrollToEle && scrollToEle.scrollIntoView();
+				}
+			}
 
 			var entered = false;
 			var leaved = false;
@@ -647,7 +668,6 @@
 		// 如果path为空 但是有base 说明 可以path为/
 		if (path || history.base || first) {
 			if (!path || path !== '/') path = '/' + (path || '');
-			// Router.setLastPath(path);
 			var parsed = parseQuery(path);
 			Router.route('get', parsed.path, parsed.query, {
 				first: first,

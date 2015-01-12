@@ -71,13 +71,15 @@
 			}
 
 			// 需要初始化一次当前的state
-			this.onChange();
+			this.onChange({
+				type: 'popstate',
+				state: History.getUrlState(location.href)
+			});
 			this.trigger('inited');
 		},
 
 		/**
 		 * 停止监听
-		 * @return {[type]} [description]
 		 */
 		stop: function() {
 			win.removeEventListener('popstate', this.onChange);
@@ -180,7 +182,7 @@
 			// 如果新的url和旧的url只是hash不同，那么应该走scrollIntoView
 			var scrollToEle;
 			if (oldState && state.rurl === oldState.rurl) {
-				if (state.hash) {
+				if (e.type !== 'popstate' && state.hash) {
 					scrollToEle = M.document.getElementById(state.hash);
 					scrollToEle && scrollToEle.scrollIntoView();
 				}
