@@ -104,7 +104,11 @@ require(['angular', 'angularRoute', 'home/controllers/appCtl'], function(angular
 
 			var parsePath = function(path) {
 				$rootScope.subPath = path;
-				return path.replace(/^(\/\w+?)(\/\w*)?$/, '$1')
+				path = path.replace(/^(\/\w+?)(\/\w*)?$/, '$1');
+				if (path.match(/^\/\d+$/)) {
+					return '/';
+				}
+				return path;
 			};
 
 			$rootScope.path = parsePath($location.path());
