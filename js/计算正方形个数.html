@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>计算正方形个数</title>
+	<style type="text/css">
+	.cs {text-align:center;overflow:hidden;background:whitesmoke;}
+	.cs-square {padding-bottom:1px;}
+	.cs-cell {display:inline-block;width:98px;height:98px;line-height:98px;margin:0 -1px -1px 0;border:1px solid blue;background:#fff;}
+	.cs-result {margin:10px;}
+
+	.input-area {text-align:center;margin:20px;overflow:hidden;}
+	button {padding:5px 10px;min-width:60px;border:none;outline:none;color:#fff;background:#3A9B5C;cursor:pointer;}
+	button:hover {background:#45B56C;}
+	button:active {background:#2A7745;}
+	</style>
+</head>
+<body>
+	<div class="input-area">
+		<label for="w">宽：</label>
+		<input type="number" id="w" value="4">
+		<label for="w">高：</label>
+		<input type="number" id="h" value="6">
+		<button type="button" id="compt">计算</button>
+	</div>
+	<script type="text/javascript">
+	;(function() {
+
+		// 网上也有类似的算法
+		// http://zhidao.baidu.com/link?url=AvKu50xElbZF1QCEUhFOY0KHQRg29PIvY56A5DdrvOTdeMr7gIZWfF50Y9tdqoDwE0OUW_uzGmK0WAO0Pes6ra
+		// 也就是正方形总数公式：n*(n+1)*(2*n+1)/6
+		// 这里是循环查找的 因为长和宽不一定是相等的
+		function CrossedSquare(xLen, yLen) {
+			this.init(xLen, yLen);
+		}
+
+		CrossedSquare.prototype = {
+			
+			constructor: CrossedSquare,
+
+			init: function(xLen, yLen) {
+				if (!yLen) yLen = xLen;
+				this.maxX = xLen - 0;
+				this.maxY = yLen - 0;
+				if (!this.div) {
+					this.div = document.createElement('div');
+					this.div.className = 'cs';
+					document.body.appendChild(this.div);
+				}
+				if (!this.resultEle) {
+					// 添加元素
+					this.resultEle = this.getResultElement();
+				} else {
+					this.resultEle = this.div.removeChild(this.resultEle);
+				}
+				this.div.innerHTML = this.getSquareHTML();
+				this.div.appendChild(this.resultEle);
+			},
+
+			getSquareHTML: function() {
+				var ret = '<div class="cs-square">';
+				// 起始位置
+				var x = 0;
+				var y = 0;
+				while (y < this.maxY) {
+					ret += '<div class="cs-row">';
+					while (x < this.maxX) {
+						ret += '<div class="cs-cell" id="' + x + '.' + y + '">' + x + ', ' + y + '</div>';
+						x++;
+					}
+					ret += '</div>';
+					x = 0;
+					y++;
+				}
+				return ret + '</div>';
+			},
+
+			getResultElement: function() {
+				var resultEle = document.createElement('div');
+				resultEle.className = 'cs-result';
+				resultEle.innerHTML = '等待计算';
+				return resultEle;
+			},
+
+			showResult: function(onlySquare) {
+				var ret = 0;
+				var x = 0;
+				var y = 0;
+				var maxX = this.maxX;
+				var maxY = this.maxY;
+				var max = 0;
+				var dir = 'x';
+				var diff = 0;
+				var x1, y1;
+				if (typeof onlySquare === 'undefined') onlySquare = true;
+				if (maxX === 1 && maxY === 1) {
+					ret = 1;
+				} else if (onlySquare && (maxX === 1 || maxY === 1)) {
+					ret = Math.max(maxX, maxY);
+				} else {
+					while (y < maxY) {
+						while (x < maxX) {
+							if (onlySquare) {
+								if (y === maxY - 1) {
+									ret += maxX > 1 ? maxX : 0;
+								} else {
+									if (y === maxY - 1) {
+										max = Math.max(maxX - x, maxY - y);
+										ret += max * (max + 1) / 2;
+									} else {
+										x1 = maxX - x;
+										y1 = maxY - y;
+										if (x1 > y1) {
+											ret += x1 * (x1 + 1) / 2;
+											diff = x1 - y1;
+											diff = diff * (diff + 1) / 2;
+											ret -= diff;
+										} else {
+											y1 = Math.min(x1, y1);
+											ret += y1 * (y1 + 1) / 2;
+										}
+									}
+								}
+								
+								x = maxX;
+							} else {
+								ret += (maxX - x) * (maxY - y);
+								x++;
+							}
+							
+						}
+						x = 0;
+						y++;
+					}
+				}
+				if (onlySquare) {
+					this.resultEle.innerHTML += '；正方形个数是：' + ret;
+				} else {
+					this.resultEle.innerHTML = '矩形个数是：' + ret;
+				}
+			}
+
+		};
+
+		window.CrossedSquare = CrossedSquare;
+
+	}());
+	
+	var $id = function(id) {
+		return document.getElementById(id);
+	};
+	var $w = $id('w');
+	var $h = $id('h');
+	var $comBtn = $id('compt');
+	var cs;
+
+	$comBtn.onclick = doCom;
+	function doCom() {
+		if (!cs) {
+			cs = new CrossedSquare($w.value, $h.value);
+		} else {
+			cs.init($w.value, $h.value);
+		}
+		setTimeout(function() {
+			cs.showResult();
+		}, 0);
+		cs.showResult(false);
+	}
+
+	$comBtn.click();
+	
+	</script>
+</body>
+</html>
