@@ -69,10 +69,6 @@ require(['angular', 'angularRoute', 'home/controllers/appCtl'], function(angular
 				templateUrl: '../partials/index.html',
 				controller: 'indexCtl'
 			})
-			.when('/:itemId', {
-				templateUrl: '../partials/indexDetail.html',
-				controller: 'indexDetailCtl'
-			})
 			.when('/index1', {
 				templateUrl: '../partials/index1.html',
 				controller: 'index1Ctl'
@@ -80,6 +76,10 @@ require(['angular', 'angularRoute', 'home/controllers/appCtl'], function(angular
 			.when('/index2', {
 				templateUrl: '../partials/index2.html',
 				controller: 'index2Ctl'
+			})
+			.when('/:itemId', {
+				templateUrl: '../partials/indexDetail.html',
+				controller: 'indexDetailCtl'
 			})
 			.otherwise({
 				redirectTo: '/'
