@@ -65,7 +65,7 @@ require(['angular', 'angularRoute', 'home/controllers/appCtl'], function(angular
 			// 就会把路由对应的模板内容插入到ng-view指令所在的
 			// 元素里
 			$routeProvider
-			.when('/index', {
+			.when('/', {
 				templateUrl: '../partials/index.html',
 				controller: 'indexCtl'
 			})
@@ -82,7 +82,7 @@ require(['angular', 'angularRoute', 'home/controllers/appCtl'], function(angular
 				controller: 'index2Ctl'
 			})
 			.otherwise({
-				redirectTo: '/index'
+				redirectTo: '/'
 			});
 
 		}
