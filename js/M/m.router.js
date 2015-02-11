@@ -1,9 +1,9 @@
 ;(function(win, factory) {
 	if (typeof define === 'function' && (define.amd || define.cmd)) {
-		define('router', function(require) {
+		define('m.router', function(require) {
 			var M = require('m');
-			var history = require('history');
-			return factory(win, M, history);
+			var history = require('m.history');
+			return (M.router = factory(win, M, history));
 		});
 	} else {
 		M.router = factory(win, M, M.history);
@@ -313,6 +313,7 @@
 							cacheTemplate = true;
 						}
 					}
+					if (M.isString(cacheTemplate)) cacheTemplate = cacheTemplate === 'true';
 					// 这里加上 得到模板 加动画 class 操作
 					if (!(cacheTemplate && templateCache[el.path]) && el.getTemplate) {
 						this.trigger('routeChangeStart', el, args);
@@ -386,8 +387,8 @@
 				nowView = M.document.getElementsByClassName(routerOptions.viewClass)[0];
 			}
 			
-			var enterClass = 'enter';
-			var leaveClass = 'leave';
+			var enterClass = 'in';
+			var leaveClass = 'out';
 			var initClass = 'init';
 			var initPosClass = leaveClass;
 			var reverseClass = 'reverse';
@@ -424,8 +425,12 @@
 
 			var animation = routerOptions.animation;
 			if (animation) {
-				var aniEnterClass = aniClass + ' ' + this.getOption(state, options.state, 'aniClass');
-				var aniLeaveClass = aniClass + ' ' + this.getOption(state, options.oldState, 'aniClass');
+				var aniEnterClass = aniClass;
+				var aniLeaveClass = aniClass;
+				if (!first) {
+					aniEnterClass += ' ' + this.getOption(state, options.state, 'aniClass');
+					aniLeaveClass += ' ' + this.getOption(this.pageViewState, options.oldState, 'aniClass');
+				}
 
 				enterClass = aniEnterClass + ' ' + enterClass;
 				leaveClass = aniLeaveClass + ' ' + leaveClass;
