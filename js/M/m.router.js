@@ -499,12 +499,13 @@
 				state.element = element;
 				var index = M.Array.indexOfByKey(pagesCache, state,  'path');
 				if (index === -1) {
-					if (that.pageViewState && (state.element.id.split('-')[2] - that.pageViewState.element.id.split('-')[2]) < 0) {
-						pagesCache.unshift(state);
-					} else {
+					// if (that.pageViewState && (state.element.id.split('-')[2] - that.pageViewState.element.id.split('-')[2]) < 0) {
+					// 	pagesCache.unshift(state);
+					// } else {
 						pagesCache.push(state);
-					}
+					// }
 				} else {
+					// 移调当前的 然后放到最后
 					pagesCache.splice(index, 1);
 					pagesCache.push(state);
 				}
