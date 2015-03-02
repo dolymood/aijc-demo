@@ -393,8 +393,7 @@
 			var initPosClass = leaveClass;
 			var reverseClass = 'reverse';
 			var aniClass = 'ani';
-			var allClass = aniClass + ' ' + enterClass + ' ' +
-										 leaveClass + ' ' + reverseClass + ' ' + initClass;
+			var allClass = enterClass;
 
 			var _pageViewEle = M.document.getElementById(id);
 			if (!_pageViewEle) {
@@ -442,7 +441,7 @@
 			}
 
 			if (pageViewState) {
-				// M.removeClass(pageViewState.element, allClass);
+				M.removeClass(pageViewState.element, allClass);
 				M.addClass(pageViewState.element, leaveClass);
 			}
 			// 移去 initPosClass
