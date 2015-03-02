@@ -476,7 +476,7 @@
 				entered = true;
 				// 取消监听事件
 				_pageViewEle.removeEventListener(aniEndName, aniEnd);
-				M.removeClass(_pageViewEle, aniEnterClass);
+				M.removeClass(_pageViewEle, aniEnterClass + ' ' + initClass);
 				endCall(_pageViewEle);
 				checkPageViews();
 
