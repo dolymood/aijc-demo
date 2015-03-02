@@ -498,7 +498,7 @@
 			function endCall(element) {
 				state.element = element;
 				var index = M.Array.indexOfByKey(pagesCache, state,  'path');
-				if (!~index) {
+				if (~index) {
 					// 移掉当前的
 					pagesCache.splice(index, 1);
 				}
