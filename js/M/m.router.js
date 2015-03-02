@@ -414,7 +414,7 @@
 			}
 
 			// 重置class
-			// M.removeClass(_pageViewEle, allClass);
+			M.removeClass(_pageViewEle, allClass);
 			M.addClass(_pageViewEle, routerOptions.viewClass + ' ' + initPosClass);
 
 			if (first) {
