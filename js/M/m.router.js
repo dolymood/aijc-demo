@@ -415,7 +415,7 @@
 			}
 
 			// 重置class
-			M.removeClass(_pageViewEle, allClass);
+			// M.removeClass(_pageViewEle, allClass);
 			M.addClass(_pageViewEle, routerOptions.viewClass + ' ' + initPosClass);
 
 			if (first) {
@@ -442,7 +442,7 @@
 			}
 
 			if (pageViewState) {
-				M.removeClass(pageViewState.element, allClass);
+				// M.removeClass(pageViewState.element, allClass);
 				M.addClass(pageViewState.element, leaveClass);
 			}
 			// 移去 initPosClass
@@ -476,6 +476,7 @@
 				entered = true;
 				// 取消监听事件
 				_pageViewEle.removeEventListener(aniEndName, aniEnd);
+				M.removeClass(_pageViewEle, aniEnterClass);
 				endCall(_pageViewEle);
 				checkPageViews();
 
@@ -487,6 +488,7 @@
 				leaved = true;
 				// 取消监听事件
 				pageViewState.element.removeEventListener(aniEndName, aniEnd2);
+				M.removeClass(pageViewState.element, aniLeaveClass);
 				// pageViewState.element.style.display = 'none';
 				checkPageViews();
 
