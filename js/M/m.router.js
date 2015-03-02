@@ -393,7 +393,7 @@
 			var initPosClass = leaveClass;
 			var reverseClass = 'reverse';
 			var aniClass = 'ani';
-			var allClass = enterClass;
+			var allClass = enterClass + ' ' + reverseClass;
 
 			var _pageViewEle = M.document.getElementById(id);
 			if (!_pageViewEle) {
