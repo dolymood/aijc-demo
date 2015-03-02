@@ -498,17 +498,11 @@
 			function endCall(element) {
 				state.element = element;
 				var index = M.Array.indexOfByKey(pagesCache, state,  'path');
-				if (index === -1) {
-					// if (that.pageViewState && (state.element.id.split('-')[2] - that.pageViewState.element.id.split('-')[2]) < 0) {
-					// 	pagesCache.unshift(state);
-					// } else {
-						pagesCache.push(state);
-					// }
-				} else {
-					// 移调当前的 然后放到最后
+				if (!~index) {
+					// 移掉当前的
 					pagesCache.splice(index, 1);
-					pagesCache.push(state);
 				}
+				pagesCache.push(state);
 				that.pageViewState = state;
 				state.callback.apply(state, args);
 				that.trigger('routeChangeEnd', state, args);
