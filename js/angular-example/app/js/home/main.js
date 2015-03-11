@@ -36,7 +36,7 @@ require.config({
 
 require(['angular', 'angularRoute', 'angularAnimate', 'home/controllers/appCtl'], function(angular) {
 
-	var app = angular.module('app', ['ngRoute', 'homeControllers']);
+	var app = angular.module('app', ['ngRoute', 'ngAnimate', 'homeControllers']);
 
 	// http://docs.angularjs.org/api/angular.Module
 	// http://docs.angularjs.org/guide/module
