@@ -18,7 +18,7 @@
 		<li ng-class="{active: path == '/index2'}"><a href="index2">index2</a>
 	</ul>
 	<div id="Bdy">
-		<div ng-view></div>
+		<div class="view" ng-view></div>
 	</div>
 
 	<script type="text/ng-template" id="template/modal/backdrop.html">
@@ -31,10 +31,5 @@
     	<div class="modal-dialog"><div class="modal-content" ng-transclude></div></div>
 		</div>
 	</script>
-
-<script type="text/javascript">
-var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F68304c4860da99495d914410caf6bb1e' type='text/javascript'%3E%3C/script%3E"));
-</script>
 </body>
 </html>
