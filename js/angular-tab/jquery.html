@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jquery 实现 Tab</title>
+	<link rel="stylesheet" type="text/css" href="tab.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+	<div class="tab">
+		<ul>
+			<li class="active"><a href='#'>选项卡 1</a>
+			<li><a href='#'>选项卡 2</a>
+			<li><a href='#'>选项卡 3</a>
+			<li><a href='#'>选项卡 4</a>
+			<li><a href='#'>选项卡 5</a>
+		</ul>
+	</div>
+	<script type="text/javascript">
+	function Tab (ele, options) {
+		this.tabEle = $(ele);
+		this.options = $.extend({
+			activeClass: 'active',
+			onSelected: $.noop
+		}, options || {});
+
+		this.currentEle = this.tabEle.find('.' + this.options.activeClass);
+		this._bindEvents();
+	}
+
+	$.extend(Tab.prototype, {
+
+		_bindEvents: function() {
+			this.tabEle.on('click', 'li > a', $.proxy(this.handlerClick, this));
+		},
+
+		handlerClick: function(e) {
+			e.preventDefault();
+
+			var newEle = $(e.currentTarget).parent();
+			
+			if (newEle.is(this.currentEle)) return;
+
+			var activeClass = this.options.activeClass;
+
+			this.tabEle.find('li').removeClass(activeClass);
+
+			newEle.addClass(activeClass);
+
+			this.currentEle = newEle;
+
+			this.options.onSelected.call(this, this.currentEle);
+
+		},
+
+		destroy: function() {
+			this.tabEle.off('click');
+			this.currentEle = null;
+			this.tabEle = null;
+			this.options = null;
+		}
+
+	});
+
+	var tab = new Tab('.tab');
+
+	</script>
+</body>
+</html>

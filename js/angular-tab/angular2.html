@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>angular 实现 Tab</title>
+	<link rel="stylesheet" type="text/css" href="tab.css">
+	<script type="text/javascript" src="http://demo.aijc.net/js/angular-example/app/lib/angular-1.2.7/angular.js"></script>
+</head>
+<body ng-app="app">
+	<div ng-controller="main">
+		<div ngd-tab="tabs" on-selected="seled(tab)">
+		</div>
+
+		<div ngd-tab="tabs" on-selected="seled(tab)">
+		</div>
+
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+	
+	app.directive('ngdTab', function() {
+
+		var tpl = '<div class="tab">' +
+				'<ul>' +
+					'<li ng-class="[$parent.currentTab === tab && activeClass || \'\']" ng-repeat="tab in tabs"><a href=\'#\' ng-bind="tab.name" ng-click="handlerClick(tab)"></a>' +
+				'</ul>' +
+			'</div>';
+
+		return {
+			
+			replace: true,
+
+			template: tpl,
+			
+			scope: {
+				tabs: '=ngdTab',
+				onSelected: '&'
+			},
+
+			link: function(scope, ele, attrs) {
+
+				var activeClass = attrs.activeClass || 'active';
+
+				scope.activeClass = activeClass;
+
+				scope.currentTab = scope.tabs[0];
+
+				scope.handlerClick = function(tab) {
+					if (tab === scope.currentTab) return;
+					scope.currentTab = tab;
+					scope.onSelected({
+						tab: tab
+					});
+				};
+
+			}
+
+		};
+
+	});
+
+	app.controller('main', ['$scope', function($scope) {
+		
+		$scope.tabs = [
+			{name: '选项卡 1'},
+			{name: '选项卡 2'},
+			{name: '选项卡 3'},
+			{name: '选项卡 4'},
+			{name: '选项卡 5'}
+		];
+
+		$scope.seled = function(tab) {
+			console.log(tab);
+		};
+
+	}]);
+	</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>angular 实现 Tab</title>
+	<link rel="stylesheet" type="text/css" href="tab.css">
+	<script type="text/javascript" src="http://demo.aijc.net/js/angular-example/app/lib/angular-1.2.7/angular.js"></script>
+</head>
+<body ng-app="app">
+	<div ng-controller="main as tabCtrl">
+		<div class="tab">
+			<ul>
+				<li ng-class="{active:tabCtrl.currentTab === tab}" ng-repeat="tab in tabCtrl.tabs"><a href='#' ng-bind="tab.name" ng-click="tabCtrl.handC(tab)"></a>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module('app', []);
+	
+	app.controller('main', function() {
+		
+		this.tabs = [
+			{name: '选项卡 1'},
+			{name: '选项卡 2'},
+			{name: '选项卡 3'},
+			{name: '选项卡 4'},
+			{name: '选项卡 5'}
+		];
+
+		this.currentTab = this.tabs[0];
+
+		var that = this;
+		this.handC = function(tab) {
+			if (tab === that.currentTab) return;
+			that.currentTab = tab;
+			handlerClick(that.currentTab);
+		};
+
+		var handlerClick = function() {
+			// ...
+		};
+
+	});
+	</script>
+</body>
+</html>
