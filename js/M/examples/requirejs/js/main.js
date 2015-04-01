@@ -1,11 +1,11 @@
 'use strict';
 
 require.config({
-	baseUrl: '/js/M/examples/requirejs/js/',
+	baseUrl: '/examples/requirejs/js/',
 	paths: {
-		'm': '/js/M/m',
-		'm.router': '/js/M/m.router',
-		'm.history': '/js/M/m.history'
+		'm': '/m',
+		'm.router': '/m.router',
+		'm.history': '/m.history'
 	}
 });
 

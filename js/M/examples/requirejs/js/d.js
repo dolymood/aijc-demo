@@ -2,6 +2,8 @@
 
 define(function() {
 
-	console.log('/d', this, arguments);
+	return function() {
+		console.log('/d', this, arguments);
+	};
 	
 });
