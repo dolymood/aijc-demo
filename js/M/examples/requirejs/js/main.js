@@ -23,7 +23,6 @@ require(['m', 'm.router'], function(M) {
 				require(['index'], function(cb) {
 					cb.apply(that, args);
 				});
-				console.log('/', this, arguments);
 			},
 			onDestroy: function() {
 				// 当前被销毁时调用
