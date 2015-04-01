@@ -17,11 +17,11 @@
 		</ul>
 	</div>
 	<script type="text/javascript">
-	function Tab (ele, options) {
+	function Tab(ele, options) {
 		this.tabEle = $(ele);
 		this.options = $.extend({
 			activeClass: 'active',
-			onSelected: $.noop
+			onSelected: $.noop // 选中后回调
 		}, options || {});
 
 		this.currentEle = this.tabEle.find('.' + this.options.activeClass);
@@ -43,16 +43,22 @@
 
 			var activeClass = this.options.activeClass;
 
+			// 移除掉所有的li的 activeClass
 			this.tabEle.find('li').removeClass(activeClass);
 
+			// 给目标元素增加 activeClass
 			newEle.addClass(activeClass);
 
 			this.currentEle = newEle;
 
+			// 回调
 			this.options.onSelected.call(this, this.currentEle);
 
 		},
 
+		/**
+		 * 简单销毁
+		 */
 		destroy: function() {
 			this.tabEle.off('click');
 			this.currentEle = null;
