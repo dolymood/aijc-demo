@@ -176,6 +176,7 @@
 			if (reverseDate) {
 				this.events.reverse();
 			}
+			var len = this.events.length;
 			$.each(this.events, function (index, evt) {
 				var pid = that._getPid(index, panelDiffNum);
 				if (pid !== lastPid) {
@@ -189,7 +190,7 @@
 					ret += lastPanel;
 				}
 				// 构建每一项内容
-				var oIndex = reverseDate ? that.events.length - index - 1 : index;
+				var oIndex = reverseDate ? len - index - 1 : index;
 				ret += that._buildItem(oIndex, index - pid * panelDiffNum, that.options.buildItemContent.call(that, evt, oIndex));
 			});
 			ret += enddiv;
@@ -265,17 +266,19 @@
 		 */
 		_bindEvents: function() {
 			var that = this;
-			!this.options.showAllEvents && this.timeline.on('_refresh', function(e) {
+			var evtName = 'refresh';
+			if (!this.options.showAllEvents) evtName = '_refresh';
+			this.timeline.on(evtName, function(e) {
 				that.inited && that.refresh();
 			});
 			this.timeline.on('focusValidDateChange', function(e, date, moving) {
 				that.moveTo(date, moving);
 			});
 
-			this.options.checkResize && $(window).on('resize', $.proxy(this._onResize, this));
+			this.options.checkResize && $(window).on('resize', (this._onResizeHandler = $.proxy(this._onResize, this)));
 
-			this._container.delegate('.tls-nav-next', 'click', $.proxy(this._onNavNext, this));
-			this._container.delegate('.tls-nav-prev', 'click', $.proxy(this._onNavPrev, this));
+			this._container.delegate('.tls-nav-next', 'click', (this._onNavNextHandler = $.proxy(this._onNavNext, this)));
+			this._container.delegate('.tls-nav-prev', 'click', (this._onNavPrevHandler = $.proxy(this._onNavPrev, this)));
 		},
 
 		/**
@@ -339,23 +342,29 @@
 			var timeline = this.timeline;
 			var reverseDate = timeline.options.reverseDate;
 			var focusEle = that.focusEle;
+			var oriDate = date;
 			if (!reverseDate && navPreving) date = timeline.getNextDate(date);
 			if (reverseDate && focusEle && !navPreving) date = timeline.getPrevDate(date);
 			$.each(this.events, function(index, evt) {
 				var _date = timeline.getValidDate(
 					Timeline.parseDateByLevel(
-						evt[reverseDate ? 'endDate' : 'startDate'], 'MSSECONDS'
+						evt['endDate'], 'MSSECONDS'
+					)
+				);
+				var _date2 = timeline.getValidDate(
+					Timeline.parseDateByLevel(
+						evt['startDate'], 'MSSECONDS'
 					)
 				);
 				var c = reverseDate ?
 									focusEle ?
-										_date - date < 0 ?
+										(_date - date < 0) || (_date2 - date < 0) ?
 											true :
 											false :
-										_date - date <= 0 ?
+										(_date - date <= 0) || (_date2 - date <= 0) ?
 												true :
 												false :
-									_date - date >= 0 ?
+									(_date - date >= 0) || (_date2 - date >= 0) ?
 										true :
 										false;
 				if (c) {
@@ -440,6 +449,31 @@
 					}
 				});
 			}
+		},
+
+		/**
+		 * 销毁
+		 */
+		destroy: function() {
+			this.off('startMoving');
+			this.off('finishMoving');
+			this._onResizeHandler && $(window).off('resize', this._onResizeHandler);
+			this._container.off('click', this._onNavNextHandler);
+			this._container.off('click', this._onNavPrevHandler);
+			this._onResizeHandler = null;
+			this._onNavNextHandler = null;
+			this._onNavPrevHandler = null;
+			this._container.remove();
+			
+			this._container = null;
+			this._body = null;
+			this._itemsContainer = null;
+			this.ele = null;
+			this.timeline = null;
+			this.options = null;
+			this.EVENT = null;
+			this.inited = false;
+			this.focusEle = null;
 		}
 
 	});
