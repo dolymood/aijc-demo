@@ -463,7 +463,8 @@
 	if (typeof define === 'function' && (define.amd || define.cmd)) {
 		define('m.history', function(require) {
 			var M = require('m');
-			return (M.history = factory(win, M));
+			M.history = factory(win, M);
+			return M;
 		});
 	} else {
 		M.history = factory(win, win.M);
@@ -799,7 +800,8 @@
 		define('m.router', function(require) {
 			var M = require('m');
 			var history = require('m.history');
-			return (M.router = factory(win, M, history));
+			M.router = factory(win, M, history);
+			return M;
 		});
 	} else {
 		M.router = factory(win, M, M.history);

@@ -7,7 +7,7 @@ require.config({
 	}
 });
 
-require(['m'], function(M) {
+require(['m.router'], function(M) {
 
 	M.router.init([
 		{
