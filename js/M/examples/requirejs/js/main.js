@@ -3,11 +3,11 @@
 require.config({
 	baseUrl: '/js/M/examples/requirejs/js/',
 	paths: {
-		'm': '/js/M/build/m'
+		'm.router': '/js/M/build/m'
 	}
 });
 
-require(['m'], function(M) {
+require(['m.router'], function(M) {
 
 	M.router.init([
 		{
