@@ -3,7 +3,7 @@
 require.config({
 	baseUrl: '/js/M/examples/requirejs/js/',
 	paths: {
-		'm': '/js/M/build/m'
+		'm.router': '/js/M/build/m'
 	}
 });
 
