@@ -590,7 +590,6 @@
 			var hrefTarget = M.getHrefAndTarget(targetEle);
 			targetEle = hrefTarget.target;
 			var href = hrefTarget.href;
-			var parsedUrl = M.parseUrl(href);
 			// 存在 href 且和当前是同源
 			// 且不带 target 且不是以 javascript: 开头
 			if (History.checkUrl(href) && !targetEle.target) {
@@ -637,8 +636,12 @@
 					return;
 				}
 			}
-			this.options.enablePushState &&
-			history[state.replace == 'true' ? 'replaceState' : 'pushState'](state, state.title, state.url);
+			// 如果是允许pushstate 且其dataset中不包含href的话才会改变history
+			// 规则就是：
+			// data-href="newUrl"会被认为是在当前页中切换，也就是局部禁用pushstate 
+			if (this.options.enablePushState && M.isUndefined(state.data.href)) {
+				history[state.replace == 'true' ? 'replaceState' : 'pushState'](state, state.title, state.url);
+			}
 			this.onChange({
 				state: state
 			});
@@ -872,7 +875,7 @@
 		showLoading: true,
 
 		/*缓存view数*/
-		cacheViewNum: 3
+		cacheViewsNum: 3
 
 	};
 
@@ -931,8 +934,8 @@
 			}
 			M.extend(this.options, options || {});
 			// view的cache数量不能少于1
-			if (this.options.cacheViewNum < 1) {
-				this.options.cacheViewNum = 1;
+			if (this.options.cacheViewsNum < 1) {
+				this.options.cacheViewsNum = 1;
 			}
 			maskEle.className = this.options.maskClass;
 			maskEle.innerHTML = '<i class="' + this.options.maskClass + '-loading"></i>';
@@ -1220,6 +1223,18 @@
 			}
 
 			var animation = routerOptions.animation;
+
+			var curAnimation = this.getOption(state, options.state, 'animation');
+			var prevAnimation = routerOptions.animation;
+			if (!first) {
+				prevAnimation = this.getOption(this.pageViewState, options.oldState, 'animation');
+			}
+
+			curAnimation = curAnimation == true || curAnimation == 'true' ? true : false;
+			prevAnimation = prevAnimation == true || prevAnimation == 'true' ? true : false;
+
+			animation = curAnimation && prevAnimation;
+			
 			if (animation) {
 				var aniEnterClass = aniClass;
 				var aniLeaveClass = aniClass;
@@ -1316,15 +1331,15 @@
 		 * 检查views 移除不需要缓存在页面上的元素
 		 */
 		checkPageViews: function() {
-			var cacheViewNum = this.options.cacheViewNum;
-			if (pagesCache.length <= cacheViewNum) return;
+			var cacheViewsNum = this.options.cacheViewsNum;
+			if (pagesCache.length <= cacheViewsNum) return;
 			// 当前的index
 			var curIndex = M.Array.indexOfByKey(pagesCache, this.pageViewState, 'path');
 			var newLeft = 0;
 			var newRight = 0;
-			newLeft = curIndex - Math.floor((cacheViewNum - 1) / 2);
+			newLeft = curIndex - Math.floor((cacheViewsNum - 1) / 2);
 			if (newLeft < 0) newLeft = 0;
-			newRight = cacheViewNum - 1 + newLeft;
+			newRight = cacheViewsNum - 1 + newLeft;
 			if (newRight > pagesCache.length - 1) {
 				// 左侧继续向左移动
 				newLeft -= newRight - pagesCache.length + 1;
