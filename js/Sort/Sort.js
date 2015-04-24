@@ -27,6 +27,30 @@ function bubbleSort(ary) {
 function selectionSort(ary) {
 	var outer = 0,
 			len = ary.length,
+			tmp, inner, minIndex;
+	for ( ; outer <= len - 2; outer++) {
+		minIndex = outer;
+		for (inner = outer + 1; inner <= len - 1; inner++) {
+			if (ary[inner] < ary[minIndex]) {
+				minIndex = inner;
+			}
+		}
+		if (minIndex !== outer) {
+			tmp = ary[outer];
+			ary[outer] = ary[minIndex];
+			ary[minIndex] = tmp;
+		}
+	}
+}
+
+/**
+ * 对数组进行选择排序
+ * @param  {Array} ary 目标数组
+ * @return {Undefined} undefined
+ */
+function selectionSort2(ary) {
+	var outer = 0,
+			len = ary.length,
 			tmp, inner;
 	for ( ; outer <= len - 2; outer++) {
 		for (inner = outer + 1; inner <= len - 1; inner++) {
@@ -45,6 +69,27 @@ function selectionSort(ary) {
  * @return {Undefined} undefined
  */
 function insertionSort(ary) {
+	var outer = 1,
+			len = ary.length,
+			inner, tmp;
+
+	for ( ; outer < len; outer++) {
+		inner = outer;
+		while (inner > 0 && ary[inner] < ary[inner - 1]) {
+			tmp = ary[inner];
+			ary[inner] = ary[inner - 1];
+			ary[inner - 1] = tmp;
+			inner--;
+		}
+	}
+}
+
+/**
+ * 对数组进行插入排序
+ * @param  {Array} ary 目标数组
+ * @return {Undefined} undefined
+ */
+function insertionSort2(ary) {
 	var outer = 1,
 			len = ary.length,
 			inner, tmp;
