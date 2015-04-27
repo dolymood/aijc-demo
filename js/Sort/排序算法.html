@@ -64,6 +64,12 @@
 
 		ary = cData(20);
 		ret.push('创建20个随机数：' + ary);
+		mergeSort2(ary);
+		ret.push('进行归并排序（方法2）后：' + ary);
+		ret.push('\n');
+
+		ary = cData(20);
+		ret.push('创建20个随机数：' + ary);
 		ary = quickSort(ary, 0 , ary.length - 1);
 		ret.push('进行快速排序（方法一）后：' + ary);
 		ret.push('\n');
@@ -105,6 +111,11 @@
 
 			ary = cData(10000);
 			t = new Date();
+			mergeSort2(ary);
+			ret.push('mergeSort2：' + (new Date() - t));
+
+			ary = cData(10000);
+			t = new Date();
 			quickSort(ary);
 			ret.push('quickSort：' + (new Date() - t));
 
@@ -114,7 +125,7 @@
 			ret.push('quickSort2：' + (new Date() - t));
 
 			updateRet();
-		}, 1000);
+		}, 2000);
 		
 		updateRet();
 		function updateRet() {	
