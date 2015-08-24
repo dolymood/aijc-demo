@@ -215,6 +215,61 @@ var mergeSort = (function() {
 	return mergeSort;
 }());
 
+var mergeSort2 = (function() {
+
+	var aux;
+	/**
+	 * 对数组进行归并排序
+	 * @param  {Array} ary  目标数组
+	 * @return {Undefined}  undefined
+	 */
+	function mergeSort(ary) {
+		aux = new Array(ary.length);
+		sort(ary, 0, ary.length - 1);
+	}
+
+	function sort(ary, lo, hi) {
+		if (hi <= lo) return;
+
+		var mid = parseInt(lo + (hi - lo) / 2);
+
+		// 进行 自顶向下的 递归拆分 然后merge
+		sort(ary, lo, mid);// 对左半边排序 其实就是先拆分拆分 然后到最后的merge（从一个到多个）去排
+		sort(ary, mid + 1, hi); // 对对右半边
+		merge(ary, lo, mid, hi);// 此时归并 出结果
+	}
+
+	/**
+	 * 归并
+	 * @param  {Array} ary 已经按照了lo到mid排好序 mid到hi排好序的数组
+	 * @param  {Number} lo  起始位置
+	 * @param  {Number} mid 中间位置
+	 * @param  {Number} hi  结束位置
+	 * @return {Undefined}  undefined
+	 */
+	function merge(ary, lo, mid, hi) {
+		var i = lo, j = mid + 1;
+		for (var k = lo; k <= hi; k++) {
+			aux[k] = ary[k];//复制一份先
+		}
+
+		for (k = lo; k <= hi; k++) {
+			if (i > mid) {// 左半边已经用尽了
+				ary[k] = aux[j++];
+			} else if (j > hi) { // 右半边已经用尽了
+				ary[k] = aux[i++];
+			} else if (aux[j] < aux[i]) { // 如果右半边的数比左半边的小 取右半边元素
+				ary[k] = aux[j++];
+			} else { // 最后 反之 取得左边元素
+				ary[k] = aux[i++];
+			}
+		}
+	}
+
+	return mergeSort;
+}());
+
+
 /**
  * 对数组进行快速排序
  * @param  {Array} ary 目标数组
