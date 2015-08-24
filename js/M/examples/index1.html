@@ -63,7 +63,7 @@
 </head>
 <body>
 	<ul class="nav">
-		<li><a href="" data-title="M — Lightweight single page bone for mobile web App.轻量级移动端单页面骨架">/</a></li>
+		<li><a href="" data-title="mobile-router.js — Lightweight single page bone for mobile web App.轻量级web端单页面骨架">/</a></li>
 		<li><a href="a" data-title="a">a</a></li>
 		<li><a href="b?c=a&v=d" data-title="b">b</a></li>
 		<li><a href="c" data-title="c">c</a></li>
@@ -113,7 +113,7 @@
 				path: '/c',
 				getTemplate: function(cb) {
 					setTimeout(function() {
-						cb('<div style="margin:20px;" class="btns"><a href="#" class="btn" data-href="/c/1">/c/1</a><a href="#" class="btn" data-href="/c/2">/c/2</a><a href="#" class="btn" data-href="/c/3">/c/3</a><p>/c</p></div>');
+						cb('<div style="margin:20px;" class="btns"><a href="#" class="btn" data-href="c/1">/c/1</a><a href="#" class="btn" data-href="c/2">/c/2</a><a href="#" class="btn" data-href="c/3">/c/3</a><p>/c</p></div>');
 					}, 500);
 				},
 				callback: function() {
@@ -126,7 +126,7 @@
 				getTemplate: function() {
 					// this.params
 					// this.query
-					return '<div style="margin:20px;" class="btns"><a href="#" class="btn" data-href="/c/1">/c/1</a><a href="#" class="btn" data-href="/c/2">/c/2</a><a href="#" class="btn" data-href="/c/3">/c/3</a><p>' + this.params.cid + '</p></div>';
+					return '<div style="margin:20px;" class="btns"><a href="#" class="btn" data-href="c/1">/c/1</a><a href="#" class="btn" data-href="c/2">/c/2</a><a href="#" class="btn" data-href="c/3">/c/3</a><p>' + this.params.cid + '</p></div>';
 				},
 				callback: function() {
 					// console.log('/c', this, arguments);
@@ -178,10 +178,5 @@
 			// console.log(type, state, oldState);
 		});
 	</script>
-
-<script type="text/javascript">
-var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F68304c4860da99495d914410caf6bb1e' type='text/javascript'%3E%3C/script%3E"));
-</script>
 </body>
 </html>
