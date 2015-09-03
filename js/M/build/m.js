@@ -1302,7 +1302,7 @@
 		destroyRouteIns: function(routeIns) {
 			var route = routeIns.route;
 			var routeView = route.routeView;
-			if (routeView && route !== this.pageViewState.route) {
+			if (routeView && (route !== this.pageViewState.route || !routeView.pageViewState)) {
 				// destroy child
 				var ins = routeView.pagesCache.shift();
 				while (ins) {
@@ -1311,7 +1311,9 @@
 				}
 				// routeView.templateCache = {};
 				routeView.pageViewState = null;
-				routeView.setViewsContainer(null);
+				if (route.ele() != this.pageViewState.element) {
+					routeView.setViewsContainer(null);
+				}
 				removeEle(routeView.maskEle);
 				routeView.maskEle = null;
 			}
