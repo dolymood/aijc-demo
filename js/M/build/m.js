@@ -273,7 +273,7 @@
 
 	// , 空格替换正则
 	var rword = /[^, ]+/g;
-
+	var rsvg = /^\[object SVG\w*Element\]$/;
 	var ClassListMethods = {
 		_toString: function() {
 			var node = this.node;
@@ -816,6 +816,7 @@
 		/*当前pageview状态对象*/
 		this.pageViewState = null;
 		this.viewsContainer = null;
+		this.routeIns = null;
 		this.options = options;
 		this.pagesCache = [];
 		this.templateCache = {};
@@ -901,7 +902,15 @@
 			return null;
 		},
 
+		_checkInsActive: function(routeIns) {
+			return this.routeIns === routeIns
+		},
+
 		_route: function(routeIns, cb) {
+			if (this.routeIns && this.routeIns.endCall) {
+				this.routeIns.endCall();
+			}
+			this.routeIns = routeIns;
 			var route = routeIns.route;
 			var that = this;
 			// 缓存模板
@@ -926,7 +935,7 @@
 				childViews = null;
 			}
 			if (M.isString(cacheTemplate)) cacheTemplate = cacheTemplate === 'true';
-			// update options.first 
+			// update options.first
 			routeIns.options.first = routeIns.options.first || !this.pageViewState;
 			// 这里加上 得到模板
 			var args = routeIns.args;
@@ -1024,6 +1033,9 @@
 		 */
 		getTemplateCb: function(routeIns, template, cb) {
 			this.hideLoading();
+			if (!this._checkInsActive(routeIns)) {
+				return;
+			}
 			routeIns._oldTemplate = this.templateCache[routeIns.path];
 			this.templateCache[routeIns.path] = template || '';
 
@@ -1100,29 +1112,32 @@
 							}
 						}
 					}
-					
+
 					if (!finded) {
 						routeView._transView(null, routeViewPS, options);
 					}
 				}
 			}
 			this._transView(_pageViewEle, routeIns, options, endCall);
-			function endCall(element) {
-				routeIns.setEle(element);
+			function endCall() {
 				var index = M.Array.indexOfByKey(that.pagesCache, routeIns,  'path');
 				if (~index) {
 					// 移掉当前的
 					that.pagesCache.splice(index, 1);
 				}
 				that.pagesCache.push(routeIns);
-				that.pageViewState = routeIns;
 				setHtml();
 				_endCall();
 			}
 			function childDone() {
+				if (routeIns.endCall === M.noop || routeIns.destroyed) {
+					routeIns.endCall = M.noop;
+					return;
+				}
 				setHtml();
 				doCallback(routeIns, 'onEnter');
 				_endCall();
+				routeIns.endCall = M.noop;
 			}
 			function setHtml() {
 				if (shown && routeView) {
@@ -1157,15 +1172,27 @@
 			var ele = pageViewState && pageViewState.element;
 			var that = this;
 
+			this.pageViewState = routeIns;
+
 			if (_pageViewEle) {
 				// 重置class
 				M.removeClass(_pageViewEle, allClass);
 				M.addClass(_pageViewEle, defViewClass + ' ' + this.options.viewClass);
 			}
-			
+
+			routeIns.endCall = function() {
+				if (routeIns.endCall === M.noop || routeIns.destroyed) {
+					routeIns.endCall = M.noop;
+					return;
+				}
+				endCall && endCall.apply(this, arguments);
+				routeIns.endCall = M.noop;
+			};
+			routeIns.setEle(_pageViewEle);
+
 			var animation = this._shouldAni(this.options.animation, routeIns, options);
 			animation = animation && !!endCall && !routeIns.redirectTo && !routeIns.options.state.data.redirectToSync;
-			
+
 			if (animation) {
 				var aniEnterClass = aniClass;
 				var aniLeaveClass = aniClass;
@@ -1195,7 +1222,7 @@
 					pageViewState.route.setActive(-1);
 				}
 			}
-			
+
 			if (_pageViewEle) {
 				// 移去 initPosClass
 				M.removeClass(_pageViewEle, initPosClass);
@@ -1204,7 +1231,7 @@
 				_pageViewEle.offsetWidth = _pageViewEle.offsetWidth;
 				doCallback(routeIns, 'onEnter');
 			}
-			
+
 			if (!routeIns.cached && options.state.hash) {
 				// 滚动到指定hash元素位置
 				scrollToHash(options.state.hash);
@@ -1217,8 +1244,7 @@
 				// 没有动画
 				entered = true;
 				leaved = true;
-				endCall && endCall(_pageViewEle);
-				endCall = null;
+				routeIns.endCall();
 				cb();
 				return;
 			}
@@ -1226,7 +1252,7 @@
 				entered = true;
 				cancelEvt(_pageViewEle, aniEnd);
 				M.removeClass(_pageViewEle, aniEnterClass);
-				endCall && endCall(_pageViewEle);
+				routeIns.endCall();
 				checkPageViews();
 			});
 			ele && ele.addEventListener(aniEndName, function aniEnd2() {
@@ -1242,7 +1268,7 @@
 			}
 			function cb() {
 				if (!_pageViewEle) {
-					endCall && endCall();
+					routeIns.endCall();
 					checkPageViews();
 					that.pageViewState = null;
 					that.defaultTemplate && M.innerHTML(that.viewsContainer, that.defaultTemplate);
@@ -1311,6 +1337,9 @@
 		 * @param  {RouteIns} routeIns RouteIns实例
 		 */
 		destroyRouteIns: function(routeIns) {
+			if (routeIns.destroyed) {
+				return;
+			}
 			var route = routeIns.route;
 			var routeView = route.routeView;
 			var nowRoute = this.pageViewState && this.pageViewState.route;
@@ -1601,7 +1630,7 @@
 					route.parentArgsLen = len;
 				}
 				this.add(path || '/', route.callback, route, routeView);
-			}, this);	
+			}, this);
 		},
 
 		/**
@@ -1779,7 +1808,7 @@
 			}
 			match[j] = routeIns.params[key.name] = val;
 		}
-		
+
 		routeIns.args = match;
 	}
 	function matchArgs(routeIns) {
